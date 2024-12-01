@@ -9,7 +9,7 @@ from app.utils.utils import get_surrounding_cells, get_adjacent_cell
 # Constraints
 from constraints.m_constraint import MConstraint
 from constraints.border_constraint import BorderConstraint
-from constraints.check import Check
+from constraints.global_constraints import GlobalConstraints
 
 # Process
 from app.process import main
@@ -23,7 +23,7 @@ if __name__ == "__main__":
             border_constraint_builder = BorderConstraint,
             game_builder = Game,
             csp_builder = CSP,
-            check = Check,
+            global_constraints = GlobalConstraints,
             get_surrounding_cells = get_surrounding_cells,
             get_adjacent_cell = get_adjacent_cell,
     )

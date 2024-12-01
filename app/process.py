@@ -8,7 +8,7 @@ def main(
     border_constraint_builder,
     game_builder,
     csp_builder,
-    check,
+    global_constraints,
     get_surrounding_cells,
     get_adjacent_cell,
     output_path,
@@ -73,15 +73,15 @@ def main(
                     constraints[current_cell].append(m_constraint_builder([cell for cell in cells if cell != current_cell]))
 
 
-    global_constraints = [
-        check.respect_cardinality,
-        check.check_boat_size,
-        check.check_nb_boat,
+    glb_constraints = [
+        global_constraints.respect_cardinality,
+        global_constraints.check_boat_size,
+        global_constraints.check_nb_boat,
     ]
 
 
     # Solve the BattleShip puzzle using CSP
-    csp = csp_builder(game, domains, constraints, global_constraints, get_surrounding_cells)
+    csp = csp_builder(game, domains, constraints, glb_constraints, get_surrounding_cells)
 
     # Chose heuristics, ordering or filter that can make algorithm faster
     # Heuristic : mrv, max_degree

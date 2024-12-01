@@ -20,3 +20,6 @@ app/utils/__pycache__/utils.cpython-39.pyc
 app/utils/__pycache__/config_loader.cpython-39.pyc
 __pycache__/core.cpython-39.pyc
 app/__pycache__/process.cpython-39.pyc
+output/solution.txt
+constraints/__pycache__/global_constraints.cpython-39.pyc
+constraints/__pycache__/constraint.cpython-39.pyc

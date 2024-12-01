@@ -1,4 +1,6 @@
-class MConstraint:
+from constraints.constraint import Constraint
+
+class MConstraint(Constraint):
 
     def __init__(self, surrounding_cells):
         self.surrounding_cells = surrounding_cells

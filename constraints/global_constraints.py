@@ -1,4 +1,4 @@
-class Check:
+class GlobalConstraints:
 
     @staticmethod
     def check_border_value(value, var, constraints_cells, assignement, game):

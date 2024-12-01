@@ -1,4 +1,6 @@
-class BorderConstraint():
+from constraints.constraint import Constraint
+
+class BorderConstraint(Constraint):
 
     def __init__(self, border_cell):
         self.border_cell = border_cell
