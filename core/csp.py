@@ -1,9 +1,8 @@
 import time
-import copy
 
 class CSP:
 
-    def __init__(self, game, domains, constraints, global_constraints, heuristics = [], order = None, strategy = None):
+    def __init__(self, game, domains, constraints, global_constraints, heuristics = [], order = None, strategy = None, use_ac3 = False):
         self.game = game
         self.domains = domains
         self.constraints = constraints
@@ -11,6 +10,7 @@ class CSP:
         self.order = order
         self.strategy = strategy
         self.global_constraints = global_constraints
+        self.use_ac3 = use_ac3
         self.solution = None
 
         # Some performance metrics
@@ -26,6 +26,8 @@ class CSP:
     def solve(self):
         assignment = {}
         self.start_time = time.time()  # Start the timer
+        if self.use_ac3:
+            self._ac3(assignment)
         self.solution = self.backtrack(assignment)
         self.end_time = time.time()
         return self.solution
@@ -60,6 +62,37 @@ class CSP:
                 self.number_of_backtracks += 1
         return None
     
+    @property
+    def ac3(self):
+        self.use_ac3 = True
+
+
+    @property
+    def remove_ac3(self):
+        self.use_ac3 = False
+
+
+    def _ac3(self, assignment):
+        queue = [(cell, cst_cell) for cell in self.game.variables for cst_cell in set([cells for constraint in self.constraints[cell] for cells in constraint.involved_cells])]
+        while queue:
+            (cell, cst_cell) = queue.pop()
+            if self.remove_inconsistent_values(cell, cst_cell, assignment):
+                if not self.domains[cell]:  # If cell has no value left, return False
+                    return False
+                for _cell in set([cells for constraint in self.constraints[cell] for cells in constraint.involved_cells]):
+                    if _cell != cst_cell:
+                        queue.append((_cell, cst_cell))
+        return True
+
+    def remove_inconsistent_values(self, cell, cst_cell, assignment):
+        removed = False
+        for value in self.domains[cell]:
+            assignment[cell] = value
+            if not any(self.is_consistent(cst_cell, cst_value, assignment) for cst_value in self.domains[cst_cell]):
+                self.domains[cell].remove(value)
+                removed = True
+            del assignment[cell]
+        return removed
 
     @property
     def forward_check(self):
@@ -143,6 +176,11 @@ class CSP:
             ordered_values = sorted(values, key=lambda x: x[1], reverse=True)
             return [x[0] for x in ordered_values]
         self.order = lambda_lcv
+
+
+    @property
+    def reset_order(self):
+        self.order = None
 
 
     @property
