@@ -91,8 +91,7 @@ def main(
     csp.lcv
     csp.forward_check
     csp.mrv
-    #csp.forward_check
-    #csp.ac3
+
 
     csp.solve()
     csp.save_solution(output_path)

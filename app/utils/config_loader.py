@@ -3,9 +3,21 @@ import numpy as np
 
 
 class ConfigLoader:
+    """This class is used to load an input file in the correct format"""
+
 
     @staticmethod
     def get_config(config_path):
+        """
+        Load an input file with right format
+        - config_path: Path of the input file
+
+        Returns a dictionnary with file informations:
+            "rows"  : rows constraints
+            "cols"  : colums constraints
+            "boats" : number of boats for each type
+            "boards": initial board with hints as np.array()
+        """
         try:
             if not os.path.exists(config_path):
                 raise Exception("File note found")
