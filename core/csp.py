@@ -144,7 +144,7 @@ class CSP:
                 return False
         for glb_cst in self.global_constraints:
             self.number_of_constraint_checks += 1
-            res = glb_cst(value, var, constraints, assignment, self.game)
+            res = glb_cst(value, var, assignment, self.game)
             if not res:
                 self.pruned_values += 1  # Increment pruned values if inconsistency is found
                 return False

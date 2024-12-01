@@ -1,22 +1,7 @@
 class GlobalConstraints:
 
     @staticmethod
-    def check_border_value(value, var, constraints_cells, assignement, game):
-        if value > 0:
-            diagonals = [border for border in constraints_cells if abs(border[0] - var[0]) == 1 and abs(border[1] - var[1]) == 1]
-            other = [cell for cell in constraints_cells if cell not in diagonals]
-            for cell in diagonals:
-                if cell in assignement and assignement[cell] != 0:
-                    return False
-            liste = [0] if value == 1 else [0, value]
-            for cell in other:
-                if cell in assignement and assignement[cell] not in liste:
-                    return False
-        return True
-
-
-    @staticmethod
-    def respect_cardinality(value, var, constraints_cells, assignement, game):
+    def respect_cardinality(value, var, assignement, game):
         rows, cols = game.get_shape
         row, col = var
         boat_counts = [1, 1] if value > 0 else [0, 0] # We count the current boat in initialization
@@ -37,7 +22,7 @@ class GlobalConstraints:
         return boat_cond and water_cond
 
     @staticmethod
-    def check_boat_size(value, var, constraints_cells, assignement, game):
+    def check_boat_size(value, var, assignement, game):
         if value > 0:
             count = [0, 0, 0, 0]
             directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]  # [Right, Left, Down, Up]
@@ -54,7 +39,7 @@ class GlobalConstraints:
         return True
     
     @staticmethod
-    def check_nb_boat(value, var, constraints_cells, assignement, game):
+    def check_nb_boat(value, var, assignement, game):
         if value > 0:
             count = list(assignement.values()).count(value)
             return (count + 1) / value <= game.boats[value]  # +1 to count the boat we are trying to place

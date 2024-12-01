@@ -24,7 +24,7 @@ def main(
 
 
     # Domains
-    max_variable = game.max_boat_size()
+    max_variable = game.max_boat_size
     rows, cols = game.get_shape
     domains = {(x, y): [i for i in range(max_variable+1)] for x, y in game.variables}
 
@@ -88,9 +88,11 @@ def main(
     # Ordering : lcv
     # Filter : forward_check, ac3
     # Example bellow
-    csp.mrv
+    csp.lcv
     csp.forward_check
-    csp.ac3
+    csp.mrv
+    #csp.forward_check
+    #csp.ac3
 
     csp.solve()
     csp.save_solution(output_path)

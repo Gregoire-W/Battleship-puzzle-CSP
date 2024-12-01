@@ -12,9 +12,14 @@ class Game:
     def get_shape(self):
         return self.board.shape
     
+
+
     def __repr__(self):
-        return f"Game :\nrows : {self.rows}\ncols : {self.cols}\nboard :\n{self.board}\nboats : {self.variables}"
+        return f"""Game :\nrows : {self.rows}\ncols : {self.cols}\nboard :\n{self.board}\n
+        boats : {self.boats}\nvariables : {self.variables}"""
     
+
+    @property
     def max_boat_size(self):
         return max(self.boats.keys())
         
