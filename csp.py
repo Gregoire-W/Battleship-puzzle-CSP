@@ -2,11 +2,12 @@ import time
 
 class CSP:
 
-    def __init__(self, game, domains, constraints, global_constraints, heuristics = []):
+    def __init__(self, game, domains, constraints, global_constraints, heuristics = [], order = None):
         self.game = game
         self.domains = domains
         self.constraints = constraints
         self.heuristics = heuristics  # By default if no heuristics we return the first element
+        self.order = order
         self.global_constraints = global_constraints
         self.solution = None
 
@@ -55,7 +56,10 @@ class CSP:
 
 
     def order_domain_values(self, var, assignment):
-        return self.domains[var]
+        if not self.order:
+            return self.domains[var]
+        else:
+            return self.order(var, assignment)
 
 
     def is_consistent(self, var, value, assignment):
@@ -86,11 +90,23 @@ class CSP:
 
     @property
     def lcv(self):
-        def lambda_lcv(unassigned_vars, assignment):
-            min_value = min(len(self.constraints[var]) for var in unassigned_vars)
-            values = [var for var in unassigned_vars if len(self.constraints[var]) == min_value]
-            return values
-        self.heuristics.append(lambda_lcv)
+        def lambda_lcv(var, assignment):
+            values = []
+            for value in self.domains[var]:
+                assignment[var] = value
+                involved_cells = set([cells for constraint in self.constraints[var] for cells in constraint.involved_cells])
+                possible_value = 0
+                for cell in involved_cells:
+                    if cell not in assignment:
+                        for cell_value in self.domains[cell]:
+                            if self.is_consistent(cell, cell_value, assignment):
+                                possible_value += 1
+                values.append((value, possible_value))
+                del assignment[var]
+            ordered_values = sorted(values, key=lambda x: x[1], reverse=True)
+            return [x[0] for x in ordered_values]
+        self.order = lambda_lcv
+
 
     @property
     def max_degree(self):

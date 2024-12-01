@@ -68,7 +68,7 @@ global_constraints = [
 
 # Solve the BattleShip puzzle using CSP
 csp = CSP(game, domains, constraints, global_constraints)
-csp.max_degree
+csp.lcv
 
 sol = csp.solve()
 
