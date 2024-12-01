@@ -67,9 +67,8 @@ global_constraints = [
 
 
 # Solve the BattleShip puzzle using CSP
-print('*'*7, 'Solution', '*'*7)
 csp = CSP(game, domains, constraints, global_constraints)
-csp.mrv
+csp.max_degree
 
 sol = csp.solve()
 
@@ -82,7 +81,8 @@ max_col = max(key[1] for key in sol.keys()) + 1
 grid = np.zeros((max_row, max_col), dtype=int)
 
 # Step 3: Fill the array with values from the dictionary
+print('*'*7, 'Solution', '*'*7)
 for (row, col), value in sol.items():
     grid[row, col] = value
 print(grid)
-print(CSP.variable_checked)
+csp.display_performance()

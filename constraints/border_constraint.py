@@ -12,3 +12,7 @@ class BorderConstraint():
             elif not diagonal and self.border_cell in assignement:
                 return assignement[self.border_cell] in liste
         return True
+    
+    @property
+    def involved_cells(self):
+        return [self.border_cell]

@@ -10,8 +10,6 @@ class MConstraint:
             horizontal_surrounding = []
             vertical_surrounding = []
             
-            x, y = var 
-            
             # For each pair of surrounding cells
             for i, (sx, sy) in enumerate(self.surrounding_cells):
                 for (tx, ty) in self.surrounding_cells[i+1:]:
@@ -21,11 +19,14 @@ class MConstraint:
                     elif sy == ty:  # Same column -> vertical
                         vertical_surrounding.extend([(sx, sy), (tx, ty)])
                         break
-                
-            not_found, found = (horizontal_surrounding, vertical_surrounding)  if horizontal_surrounding == [] else (vertical_surrounding, horizontal_surrounding)
+            
+            # As soon as we found one, we know the other so let's determine which one we found
+            found = vertical_surrounding if horizontal_surrounding == [] else horizontal_surrounding
+            last_cell = [cell for cell in self.surrounding_cells if cell not in found][0]
 
-            not_found.extend([cell for cell in self.surrounding_cells if cell not in found])
-            not_found.append(var)
-
-            return all(assignement[cell] != 0 for cell in found) or all(assignement[cell] != 0 for cell in not_found)
+            return all(assignement[cell] != 0 for cell in found) or (assignement[last_cell] != 0 and value != 0)
         return True
+    
+    @property
+    def involved_cells(self):
+        return self.surrounding_cells
