@@ -1,13 +1,15 @@
 import time
+import copy
 
 class CSP:
 
-    def __init__(self, game, domains, constraints, global_constraints, heuristics = [], order = None):
+    def __init__(self, game, domains, constraints, global_constraints, heuristics = [], order = None, strategy = None):
         self.game = game
         self.domains = domains
         self.constraints = constraints
         self.heuristics = heuristics  # By default if no heuristics we return the first element
         self.order = order
+        self.strategy = strategy
         self.global_constraints = global_constraints
         self.solution = None
 
@@ -38,12 +40,47 @@ class CSP:
             if self.is_consistent(var, value, assignment):
                 self.node_expansions += 1
                 assignment[var] = value
-                result = self.backtrack(assignment)
-                if result is not None:
-                    return result
+                if self.strategy:
+                    cond, removed_values = self.strategy(var, value, assignment)
+                else:
+                    cond, removed_values = True, {}
+                if cond:
+                    result = self.backtrack(assignment)
+                    if result is not None:
+                        return result
+                
+                # Get back every removed values
+                for k, values in removed_values.items():
+                    if k in self.domains:
+                        self.domains[k].extend([val for val in values])
+                    else:
+                        self.domains[k] = [val for val in values]
+
                 del assignment[var]
                 self.number_of_backtracks += 1
         return None
+    
+
+    @property
+    def forward_check(self):
+        def lambda_forward_check(var, value, assignment):
+            involved_cells = set([cells for constraint in self.constraints[var] for cells in constraint.involved_cells])
+            removed_values = {}
+            for cell in involved_cells:
+                if cell not in assignment:
+                    fixed_values = self.domains[cell].copy()  # Otherwise the loop misses values because it deletes them
+                    for cell_value in fixed_values:
+                        if not self.is_consistent(cell, cell_value, assignment):
+                            self.domains[cell].remove(cell_value)
+                            if cell in removed_values:
+                                removed_values[cell].append(cell_value)
+                            else:
+                                removed_values[cell] = [cell_value]
+                            self.pruned_values += 1
+                if not self.domains[cell]:
+                    return False, removed_values
+            return True, removed_values
+        self.strategy = lambda_forward_check
     
 
     def select_unassigned_variable(self, assignment):
