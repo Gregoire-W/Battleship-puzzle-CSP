@@ -17,7 +17,7 @@ class ConfigLoader:
                     lines = f.read().splitlines()
 
                     _dict = {}
-                    for i, key in enumerate(["rows", "cols", "variables"]):
+                    for i, key in enumerate(["rows", "cols", "boats"]):
                         _dict[key] = np.array([int(elem) for elem in lines[i]])
                     _dict["board"] = np.array(
                         [[elem for elem in line] for line in lines[i + 1 :]]
