@@ -11,6 +11,7 @@ def main(
     check,
     get_surrounding_cells,
     get_adjacent_cell,
+    output_path,
 ):
 
 
@@ -80,7 +81,7 @@ def main(
 
 
     # Solve the BattleShip puzzle using CSP
-    csp = csp_builder(game, domains, constraints, global_constraints)
+    csp = csp_builder(game, domains, constraints, global_constraints, get_surrounding_cells)
 
     # Chose heuristics, ordering or filter that can make algorithm faster
     # Heuristic : mrv, max_degree
@@ -91,20 +92,8 @@ def main(
     csp.forward_check
     csp.ac3
 
+    csp.solve()
+    csp.save_solution(output_path)
 
-    sol = csp.solve()
-
-    # Format the solution for output
-    # Step 1: Determine grid dimensions
-    max_row = max(key[0] for key in sol.keys()) + 1
-    max_col = max(key[1] for key in sol.keys()) + 1
-
-    # Step 2: Create an empty NumPy array
-    grid = np.zeros((max_row, max_col), dtype=int)
-
-    # Step 3: Fill the array with values from the dictionary
-    print('*'*7, 'Solution', '*'*7)
-    for (row, col), value in sol.items():
-        grid[row, col] = value
-    print(grid)
+    csp.display_solution()
     csp.display_performance()

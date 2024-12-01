@@ -17,6 +17,7 @@ from app.process import main
 if __name__ == "__main__":
     main(
             config_path = "./input/init.txt",
+            output_path = "./output/solution.txt",
             loader = ConfigLoader,
             m_constraint_builder = MConstraint,
             border_constraint_builder = BorderConstraint,

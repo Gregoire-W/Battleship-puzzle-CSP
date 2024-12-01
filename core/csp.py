@@ -1,8 +1,9 @@
 import time
+import numpy as np
 
 class CSP:
 
-    def __init__(self, game, domains, constraints, global_constraints, heuristics = [], order = None, strategy = None, use_ac3 = False):
+    def __init__(self, game, domains, constraints, global_constraints, get_surrounding_cells, heuristics = [], order = None, strategy = None, use_ac3 = False):
         self.game = game
         self.domains = domains
         self.constraints = constraints
@@ -10,6 +11,7 @@ class CSP:
         self.order = order
         self.strategy = strategy
         self.global_constraints = global_constraints
+        self.get_surrounding_cells = get_surrounding_cells
         self.use_ac3 = use_ac3
         self.solution = None
 
@@ -207,6 +209,55 @@ class CSP:
         print("Number of Constraint Checks: {}".format(self.number_of_constraint_checks))
         print("Pruned values: {}".format(self.pruned_values))
 
+
+    def display_solution(self):
+        # Format the solution for output
+        # Step 1: Determine grid dimensions
+        max_row = max(key[0] for key in self.solution.keys()) + 1
+        max_col = max(key[1] for key in self.solution.keys()) + 1
+
+        # Step 2: Create an empty NumPy array
+        grid = np.zeros((max_row, max_col), dtype=int)
+
+        # Step 3: Fill the array with values from the dictionary
+        print('*'*7, 'Solution', '*'*7)
+        for (row, col), value in self.solution.items():
+            grid[row, col] = value
+        print(grid)
+
+
     @property
     def reset_heuristic(self):
         self.heuristic = []
+
+    def save_solution(self, output_path):
+        max_row = max(key[0] for key in self.solution.keys()) + 1
+        max_col = max(key[1] for key in self.solution.keys()) + 1
+
+        with open(output_path, "w") as f:
+            sorted_solution = dict(sorted(self.solution.items(), key=lambda item: (item[0][0], item[0][1])))
+            for (row, col), value in sorted_solution.items():
+                if(row != 0 and col == 0):
+                    f.write("\n")
+                if value == 0:
+                    write = "."
+                elif value == 1:
+                    write = "S"
+                else:  # value > 1
+                    cells = self.get_surrounding_cells((row, col), max_row, max_col)
+                    nb_surrounding_boat = sum([1 for value in cells if sorted_solution[value] > 0])
+                    if nb_surrounding_boat == 2:
+                        write = "M"
+                    elif nb_surrounding_boat == 1:
+                        cell = [cell for cell in cells if sorted_solution[cell] > 0][0]
+                        if cell == (row, col+1):  # cell is at right
+                            write = "<"
+                        elif cell == (row, col-1):  # cell is at left
+                            write = ">"
+                        elif cell == (row - 1, col):  # cell is up
+                            write = "v"
+                        else:  # cell at is down
+                            write = "^"
+                    else:
+                        raise ValueError("Boat is supposed to be surrounded only by 1 or 2 boats")
+                f.write(write)
