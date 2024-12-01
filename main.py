@@ -1,13 +1,20 @@
-from csp import CSP
-from config_loader import ConfigLoader as cl
-from check import Check as ck
-from game import Game
+# Regular import
 import numpy as np
-from border_constraint import BorderConstraint
-from utils import get_surrounding_cells
-from m_constraint import MConstraint
 
-config_file = cl.get_config("init.txt")
+# Core Objects
+from csp import CSP
+from game import Game
+
+# Utils
+from utils.config_loader import ConfigLoader as cl
+from utils.utils import get_surrounding_cells
+
+# Constraints
+from constraints.m_constraint import MConstraint
+from constraints.border_constraint import BorderConstraint
+from constraints.check import Check as ck
+
+config_file = cl.get_config("Input/init.txt")
 rows, cols = config_file["board"].shape
 
 # Variables, we consider every case of the board
@@ -22,9 +29,16 @@ domains = {}
 
 for x, y in game.variables: 
     domains[(x, y)] = [i for i in range(max_variable+1)]
-    if game.board[x, y] == "M":
-        for i in range(3):
-            domains[(x, y)].remove(i)
+    # If there is a M at this pos, the cell can't take the value 0, 1 and 2 beause it's the middle of a boat
+    if game.board[x, y] != "0":  # To avoid testing each sign every time because most of the time valur will be 0
+        if game.board[x, y] == "M":
+            for i in range(3):
+                domains[(x, y)].remove(i)
+        # If there is any of this sign ["<", ">", "^", "v"] at this pos, the cell can't take the value 0 and 1 because it's a boat extermity
+        elif game.board[x, y] in ["<", ">", "^", "v"]:
+            for i in range(2):
+                domains[(x, y)].remove(i)
+
 
 # Constraints
 constraints = {variable : [] for variable in game.variables}
@@ -55,6 +69,8 @@ global_constraints = [
 # Solve the BattleShip puzzle using CSP
 print('*'*7, 'Solution', '*'*7)
 csp = CSP(game, domains, constraints, global_constraints)
+csp.mrv
+
 sol = csp.solve()
 
 # Format the solution for output
@@ -69,3 +85,4 @@ grid = np.zeros((max_row, max_col), dtype=int)
 for (row, col), value in sol.items():
     grid[row, col] = value
 print(grid)
+print(CSP.variable_checked)
