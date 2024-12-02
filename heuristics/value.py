@@ -1,10 +1,12 @@
 from heuristics.heuristic import Heuristic
 
+h_type = "value"
+
 class LCV(Heuristic):
 
     @staticmethod
     def get_type():
-        return "value"
+        return h_type
 
     @staticmethod
     def apply(var, csp):

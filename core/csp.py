@@ -15,9 +15,9 @@ class CSP:
         self.strategy = None
         self.global_constraints = global_constraints
         self.format_solution = format_solution
-        self.use_ac3 = False
         self.solution = None
-        self.heuristics = {h: [] for h in ["variable", "value"]}
+        self.accepted_h = ["variable", "value", "ac3", "fw_ck"]
+        self.heuristics = {h: [] for h in self.accepted_h}
         self.assignment = {} 
 
         # Some performance metrics
@@ -38,8 +38,8 @@ class CSP:
         Returns the result if it exists, else None .
         """
         self.start_time = time.time()
-        if self.use_ac3:
-            self._ac3()
+        for ac3 in self.heuristics["ac3"]:
+            ac3.apply(self)
         self.solution = self.backtrack()
         self.end_time = time.time()
         return self.solution
@@ -61,10 +61,9 @@ class CSP:
             if self.is_consistent(var, value):
                 self.node_expansions += 1
                 self.assignment[var] = value
-                if self.strategy:
-                    cond, removed_values = self.strategy(var)
-                else:
-                    cond, removed_values = True, {}
+                cond, removed_values = True, {}
+                for fw_ck in self.heuristics["fw_ck"]:
+                    cond, removed_values = fw_ck.apply(self, var)
                 if cond:
                     result = self.backtrack()
                     if result is not None:
@@ -132,92 +131,6 @@ class CSP:
                 self.pruned_values += 1  # Increment pruned values if inconsistency is found
                 return False
         return True
-
-
-    @property
-    def ac3(self):
-        """
-        Adds the AC3 algorithm to reduce variable domains if this method is called before .solve()
-        """
-        self.use_ac3 = True
-
-
-    @property
-    def remove_ac3(self):
-        """
-        Remove the AC3 algorithm if this method is called before .solve()
-        """
-        self.use_ac3 = False
-
-
-    def _ac3(self):
-        """
-        This is the AC-3 (Arc Consistency 3) method, used to reduce the domains of variables by enforcing arc consistency before applying backtracking.
-        It ensures that every variable in the CSP has a valid domain with respect to its constraints, thereby simplifying the problem.
-        - assignment: the current variable assignment of the CSP
-
-        Returns True if all variables still have available values, else False
-        """
-        queue = [(cell, cst_cell) for cell in self.game.variables for cst_cell in set([cells for constraint in self.constraints[cell] for cells in constraint.involved_cells])]
-        while queue:
-            (cell, cst_cell) = queue.pop()
-            if self.remove_inconsistent_values(cell, cst_cell):
-                if not self.domains[cell]:  # If cell has no value left, return False
-                    return False
-                for _cell in set([cells for constraint in self.constraints[cell] for cells in constraint.involved_cells]):
-                    if _cell != cst_cell:
-                        queue.append((_cell, cst_cell))
-        return True
-
-    def remove_inconsistent_values(self, cell, cst_cell):
-        """
-        This function removes inconsistent values from the domain of a variable to ensure arc consistency
-        It checks whether there is a value in the domain of one variable that conflicts with all possible values of its neighbor,
-        removing such inconsistent values
-        - cell: the cell we want to ensure arc consistency
-        - cst_cell: the neighboring cell involved in the constraint with cell
-        - assignment: the current variable assignment of the CSP
-
-        Returns True if at least a variable lost a value, else False
-        """
-        removed = False
-        for value in self.domains[cell]:
-            self.assignment[cell] = value
-            if not any(self.is_consistent(cst_cell, cst_value, self.assignment) for cst_value in self.domains[cst_cell]):
-                self.domains[cell].remove(value)
-                removed = True
-            del self.assignment[cell]
-        return removed
-
-    @property
-    def forward_check(self):
-        def lambda_forward_check(var):
-            """
-            This method implements forward checking, a constraint propagation technique used during backtracking search
-            It prunes the domains of unassigned variables to ensure consistency with the current assignment, reducing the search space
-            - var: the variable that has just been assigned a value.
-
-            Returns
-            - True if forward checking doesn't fail, else False.
-            - a dictionnary of removed value to keep it in memory
-            """
-            involved_cells = set([cells for constraint in self.constraints[var] for cells in constraint.involved_cells])
-            removed_values = {}
-            for cell in involved_cells:
-                if cell not in self.assignment:
-                    fixed_values = self.domains[cell].copy()  # Otherwise the loop misses values because it deletes them
-                    for cell_value in fixed_values:
-                        if not self.is_consistent(cell, cell_value):
-                            self.domains[cell].remove(cell_value)
-                            if cell in removed_values:
-                                removed_values[cell].append(cell_value)
-                            else:
-                                removed_values[cell] = [cell_value]
-                            self.pruned_values += 1
-                if not self.domains[cell]:
-                    return False, removed_values
-            return True, removed_values
-        self.strategy = lambda_forward_check
 
 
     def display_performance(self):
@@ -291,10 +204,8 @@ class CSP:
         - metrics
         - assignement
         """
-        self.heuristics = []
-        self.order = None
+        self.heuristics = {h: [] for h in self.accepted_h}
         self.strategy = None
-        self.remove_ac3
         self.reset_metrics
         self.domains = copy.deepcopy(self.initial_domain)
         self.assignment = {}

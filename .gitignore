@@ -27,3 +27,7 @@ heuristics/__pycache__/heuristic.cpython-39.pyc
 heuristics/__pycache__/lcv.cpython-39.pyc
 heuristics/__pycache__/max_degree.cpython-39.pyc
 heuristics/__pycache__/mrv.cpython-39.pyc
+heuristics/__pycache__/ac3.cpython-39.pyc
+heuristics/__pycache__/variable.cpython-39.pyc
+heuristics/__pycache__/value.cpython-39.pyc
+heuristics/__pycache__/forward_check.cpython-39.pyc

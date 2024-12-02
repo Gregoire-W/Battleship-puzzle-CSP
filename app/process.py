@@ -16,6 +16,8 @@ def main(
     MRV,
     LCV,
     MaxDegree,
+    AC3,
+    ForwardCheck,
 ):
 
 
@@ -93,8 +95,7 @@ def main(
     - Filter : forward_check, ac3
     Example bellow
     """
-    heuristics = [MRV, LCV]
-    csp.forward_check
+    heuristics = [MRV, LCV, AC3, ForwardCheck]
     csp.add_heuristics(heuristics)
 
     #Solve the solution with backtracking using all the strategies defined above
