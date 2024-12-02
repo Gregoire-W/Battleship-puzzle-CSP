@@ -23,3 +23,7 @@ app/__pycache__/process.cpython-39.pyc
 output/solution.txt
 constraints/__pycache__/global_constraints.cpython-39.pyc
 constraints/__pycache__/constraint.cpython-39.pyc
+heuristics/__pycache__/heuristic.cpython-39.pyc
+heuristics/__pycache__/lcv.cpython-39.pyc
+heuristics/__pycache__/max_degree.cpython-39.pyc
+heuristics/__pycache__/mrv.cpython-39.pyc

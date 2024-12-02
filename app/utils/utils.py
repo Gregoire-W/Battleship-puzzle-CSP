@@ -1,3 +1,5 @@
+import numpy as np
+
 def get_surrounding_cells(cell, rows, cols):
     """
     Finds all the cells stuck directly to the one passed as a parameter (not the diagonal cells)
@@ -53,3 +55,44 @@ def get_adjacent_cell(cell, sign, rows, cols):
         return new_coord
     else:
         return None
+    
+def format_solution(solution):
+    """
+    This method format the dictonnary solution to a numpy array so it can be easier to use it (for instance to save or display it). 
+    Each cell is represented by a specific character indicating its status (empty, ship, or part of a boat).
+    - output_path: The file path where the solution will be saved.
+
+    Solution Representation:
+    - "." indicates an empty cell.
+    - "S" indicates a standalone ship (size 1).
+    - "M" indicates the middle part of a boat (size > 1).
+    - "<", ">", "v", "^" indicate directional parts of a boat:
+
+    Raises:
+    - ValueError: If a boat cell is surrounded by more than two other boat cells.
+    """
+    max_row = max(key[0] for key in solution.keys()) + 1
+    max_col = max(key[1] for key in solution.keys()) + 1
+    array_solution = np.full((max_row, max_col), ".", dtype = str)  # Put . by default for water so we don"t have to check it
+
+    for (row, col), value in solution.items():
+        if value == 1:
+            array_solution[row][col] = "S"
+        elif value > 1:
+            cells = get_surrounding_cells((row, col), max_row, max_col)
+            nb_surrounding_boat = sum([1 for value in cells if solution[value] > 0])
+            if nb_surrounding_boat == 2:
+                array_solution[row][col] = "M"
+            elif nb_surrounding_boat == 1:
+                cell = [cell for cell in cells if solution[cell] > 0][0]
+                if cell == (row, col+1):  # cell is at right
+                    array_solution[row][col] = "<"
+                elif cell == (row, col-1):  # cell is at left
+                    array_solution[row][col] = ">"
+                elif cell == (row - 1, col):  # cell is up
+                    array_solution[row][col] = "v"
+                else:  # cell is down
+                    array_solution[row][col] = "^"
+            else :
+                raise ValueError("Boat is supposed to be surrounded only by 1 or 2 boats")
+    return array_solution

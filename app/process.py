@@ -1,21 +1,25 @@
 # Regular import
 import numpy as np
 
+# Utils
+from app.utils.utils import get_adjacent_cell, get_surrounding_cells, format_solution
+from app.utils.config_loader import ConfigLoader
+
 def main(
     config_path,
-    loader,
     m_constraint_builder,
     border_constraint_builder,
     game_builder,
     csp_builder,
     global_constraints,
-    get_surrounding_cells,
-    get_adjacent_cell,
     output_path,
+    MRV,
+    LCV,
+    MaxDegree,
 ):
 
 
-    config_file = loader.get_config(config_path)
+    config_file = ConfigLoader.get_config(config_path)
     rows, cols = config_file["board"].shape
 
     # Variables, we consider every case of the board
@@ -81,20 +85,21 @@ def main(
 
 
     # Solve the BattleShip puzzle using CSP
-    csp = csp_builder(game, domains, constraints, glb_constraints, get_surrounding_cells)
-
-    # Chose heuristics, ordering or filter that can make algorithm faster
-    # Heuristic : mrv, max_degree
-    # Ordering : lcv
-    # Filter : forward_check, ac3
-    # Example bellow
-    csp.lcv
+    csp = csp_builder(game, domains, constraints, glb_constraints, format_solution)
+    """
+    Chose different strategies that can make algorithm faster
+    - Heuristic : mrv, max_degree
+    - Ordering : lcv
+    - Filter : forward_check, ac3
+    Example bellow
+    """
+    heuristics = [MRV, LCV]
     csp.forward_check
-    csp.mrv
+    csp.add_heuristics(heuristics)
 
-
+    #Solve the solution with backtracking using all the strategies defined above
     csp.solve()
-    csp.save_solution(output_path)
 
+    csp.save_solution(output_path)
     csp.display_solution()
     csp.display_performance()
