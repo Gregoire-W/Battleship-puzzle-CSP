@@ -10,8 +10,10 @@ from constraints.global_constraints import GlobalConstraints
 # Heuristics
 from heuristics.value import LCV
 from heuristics.variable import MRV, MaxDegree
-from heuristics.ac3 import AC3
-from heuristics.forward_check import ForwardCheck
+
+# Methods
+from methods.ac3 import AC3
+from methods.forward_check import ForwardCheck
 
 # Process
 from app.process import main

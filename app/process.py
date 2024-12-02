@@ -95,8 +95,10 @@ def main(
     - Filter : forward_check, ac3
     Example bellow
     """
-    heuristics = [MRV, LCV, AC3, ForwardCheck]
+    heuristics = [MRV, LCV]
+    methods = [AC3, ForwardCheck]
     csp.add_heuristics(heuristics)
+    csp.add_methods(methods)
 
     #Solve the solution with backtracking using all the strategies defined above
     csp.solve()

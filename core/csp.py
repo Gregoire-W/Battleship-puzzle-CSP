@@ -16,8 +16,10 @@ class CSP:
         self.global_constraints = global_constraints
         self.format_solution = format_solution
         self.solution = None
-        self.accepted_h = ["variable", "value", "ac3", "fw_ck"]
+        self.accepted_h = ["variable", "value"]
         self.heuristics = {h: [] for h in self.accepted_h}
+        self.accepted_m = ["ac3", "fw_ck"]
+        self.methods = {m: None for m in self.accepted_m}
         self.assignment = {} 
 
         # Some performance metrics
@@ -38,8 +40,8 @@ class CSP:
         Returns the result if it exists, else None .
         """
         self.start_time = time.time()
-        for ac3 in self.heuristics["ac3"]:
-            ac3.apply(self)
+        if self.methods["ac3"]:
+            self.methods["ac3"].apply(self)
         self.solution = self.backtrack()
         self.end_time = time.time()
         return self.solution
@@ -62,8 +64,8 @@ class CSP:
                 self.node_expansions += 1
                 self.assignment[var] = value
                 cond, removed_values = True, {}
-                for fw_ck in self.heuristics["fw_ck"]:
-                    cond, removed_values = fw_ck.apply(self, var)
+                if self.methods["fw_ck"]:
+                    cond, removed_values = self.methods["fw_ck"].apply(self, var)
                 if cond:
                     result = self.backtrack()
                     if result is not None:
@@ -197,15 +199,13 @@ class CSP:
         """
         This property reset all things below for the initial values
         - heuristics
-        - order
-        - forward checking
-        - ac3
-        - domains
+        - methods
         - metrics
+        - domains
         - assignement
         """
         self.heuristics = {h: [] for h in self.accepted_h}
-        self.strategy = None
+        self.methods = {m: None for m in self.accepted_m}
         self.reset_metrics
         self.domains = copy.deepcopy(self.initial_domain)
         self.assignment = {}
@@ -215,4 +215,12 @@ class CSP:
             if h.get_type() in self.heuristics:
                 self.heuristics[h.get_type()].append(h)
             else:
-                raise ValueError(f"Type {h.get_type()} : is not accepted [in heuristic : {type(h).__name__}]")
+                raise ValueError(f"Type {h.get_type()} : is not accepted [in heuristic : {h.__name__}]")
+            
+
+    def add_methods(self, methods):
+        for h in methods:
+            if h.get_type() in self.methods:
+                self.methods[h.get_type()] = h
+            else:
+                raise ValueError(f"Type {h.get_type()} : is not accepted [in methods : {h.__name__}]")

@@ -1,12 +1,12 @@
-from heuristics.heuristic import Heuristic
+from methods.method import Method
 
-h_type = "ac3"
+m_type = "ac3"
 
-class AC3(Heuristic):
+class AC3(Method):
 
     @staticmethod
     def get_type():
-        return h_type
+        return m_type
 
     @staticmethod
     def apply(csp):

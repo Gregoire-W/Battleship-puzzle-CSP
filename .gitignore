@@ -31,3 +31,6 @@ heuristics/__pycache__/ac3.cpython-39.pyc
 heuristics/__pycache__/variable.cpython-39.pyc
 heuristics/__pycache__/value.cpython-39.pyc
 heuristics/__pycache__/forward_check.cpython-39.pyc
+methods/__pycache__/method.cpython-39.pyc
+methods/__pycache__/ac3.cpython-39.pyc
+methods/__pycache__/forward_check.cpython-39.pyc

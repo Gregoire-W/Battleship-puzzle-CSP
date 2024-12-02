@@ -1,12 +1,12 @@
-from heuristics.heuristic import Heuristic
+from methods.method import Method
 
-h_type = "fw_ck"
+m_type = "fw_ck"
 
-class ForwardCheck(Heuristic):
+class ForwardCheck(Method):
     
     @staticmethod
     def get_type():
-        return h_type
+        return m_type
 
     @staticmethod
     def apply(csp, var):
