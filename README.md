@@ -64,7 +64,7 @@ Clone the repository and run the program:
 git clone <repository-url>  
 cd battleship-csp  
 python main.py
-
+```
 ---
 <a name="usage"></a>
 ## 🔧 **Usage**  
