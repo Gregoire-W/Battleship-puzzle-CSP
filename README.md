@@ -19,7 +19,7 @@ This project solves the Battleship Puzzle using **Constraint Satisfaction Proble
 6. [Contact Information](#contact-information)  
 
 ---
-
+<a name="features"></a>
 ## 🚀 **Features**  
 This project uses CSP to solve the Battleship Puzzle. Here's how it works:  
 
@@ -52,12 +52,12 @@ To improve the solving process:
 - Display or save the puzzle's solution for further study or visualization.  
 
 ---
-
+<a name="screenshots-or-demo"></a>
 ## 📸 **Screenshots or Demo**  
 _(Coming Soon!)_  
 
 ---
-
+<a name="installation"></a>
 ## 💻 **Installation**  
 Clone the repository and run the program:  
 ```bash  
@@ -66,7 +66,7 @@ cd battleship-csp
 python main.py
 
 ---
-
+<a name="usage"></a>
 ## 🔧 **Usage**  
 This project is adaptable for solving other CSP problems. To use it:  
 1. Define new **variables**, **domains**, and **constraints**.  
@@ -74,14 +74,13 @@ This project is adaptable for solving other CSP problems. To use it:
 3. Metrics and heuristics are built-in and reusable!  
 
 ---
-
+<a name="technologies-used"></a>
 ## 🛠️ **Technologies Used**  
 - **Python**: Programming language.  
 - **Libraries**: (List the specific libraries used, such as NumPy, matplotlib, etc.)  
 
 ---
-
+<a name="contact-information"></a>
 ## 📬 **Contact Information**  
 For questions or support, feel free to reach out:  
 **Email**: gregoire.woroniak@gmail.com  
-
