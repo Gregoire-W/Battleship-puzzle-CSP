@@ -24,8 +24,8 @@ This project solves the Battleship Puzzle using **Constraint Satisfaction Proble
 This project uses CSP to solve the Battleship Puzzle. Here's how it works:  
 
 ### 🛠️ **CSP Approach**  
-Each cell of the grid is treated as a **variable**:  
-- **Domain**: Each variable can represent a type of boat (e.g., 0 for water, 1 for submarines, etc.).  
+- **Variable**: Each cell of the grid is treated as a variable  
+- **Domain**: Each variable can represent a type of boat (0 for water, 1 for submarines, 2 for destroyers, 3 for carriers, 4 for battleships).  
 - **Constraints**:  
   1. **Unique Constraints**  
      - **Border Constraints**:  
