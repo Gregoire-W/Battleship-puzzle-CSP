@@ -83,10 +83,3 @@ This project is adaptable for solving other CSP problems. To use it:
 ## 📬 **Contact Information**  
 For questions or support, feel free to reach out:  
 **Email**: gregoire.woroniak@gmail.com  
-
----
-<a name="contribution-guidelines"></a>
-## 📬 **Contribution Guidelines**  
-For this project I collaborated with [Lucas] who helped me a lot with the architecture, mainly how to separate the main from the rest of the programme and make sure to respect the **SOLID principles** as much as possible in the construction of each class.
-You can find this work here: [git lab link]
-Or contact him by email: [email address]
